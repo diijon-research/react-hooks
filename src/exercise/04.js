@@ -25,7 +25,7 @@ function Board() {
     // 🐨 first, if there's already winner or there's already a value at the
     // given square index (like someone clicked a square that's already been
     // clicked), then return early so we don't make any state changes
-    if (squares[square] !== null)
+    if (winner !== null || squares[square] !== null)
       return
 
     // 🦉 It's typically a bad idea to mutate or directly change state in React.
@@ -46,7 +46,7 @@ function Board() {
   function restart() {
     // 🐨 reset the squares
     // 💰 `Array(9).fill(null)` will do it!
-    Array(9).fill(null)
+    setSquares(Array(9).fill(null))
   }
 
   function renderSquare(i) {
