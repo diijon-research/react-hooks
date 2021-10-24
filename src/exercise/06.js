@@ -11,27 +11,34 @@ import {PokemonForm, fetchPokemon, PokemonInfoFallback, PokemonDataView} from '.
 function PokemonInfo({pokemonName}) {
   // 🐨 Have state for the pokemon (null)
   const [pokemon, setPokemon] = React.useState(null)
+  const [error, setError] = React.useState(null)
 
-  // 🐨 use React.useEffect where the callback should be called whenever the
-  // pokemon name changes.
+  // 🐨 use React.useEffect where the callback should be called whenever the pokemon name changes.
   React.useEffect(() => {
-    if (!pokemon)
+    // 💰 if the pokemonName is falsy (an empty string) then don't bother making the request (exit early).
+    if (!pokemonName)
       return
 
+    // 🐨 before calling `fetchPokemon`, clear the current pokemon state by setting it to null
     setPokemon(null)
 
-    fetchPokemon(pokemonName).then(pokemonResponse => {
-      setPokemon(pokemonResponse)
-    })
+    // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
+    fetchPokemon(pokemonName)
+      .then((pokemonResponse) => {
+        setPokemon(pokemonResponse)
+      })
+      .catch(error => setError(error))
 
     // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
-    // 💰 if the pokemonName is falsy (an empty string) then don't bother making the request (exit early).
-    // 🐨 before calling `fetchPokemon`, clear the current pokemon state by setting it to null
-    // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
-    //   fetchPokemon('Pikachu').then(
-    //     pokemonData => {/* update all the state here */},
-    //   )
-  }, [pokemonName])
+  }, [pokemonName, error])
+
+  if (error){
+    return (
+      <div role="alert">
+        There was an error: <pre style={{whitespace: 'normal'}}>{error.message}</pre>
+      </div>
+    )
+  }
 
   // 🐨 return the following things based on the `pokemon` state and `pokemonName` prop:
   if (!pokemonName) {
